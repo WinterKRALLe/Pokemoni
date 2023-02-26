@@ -1,0 +1,22 @@
+---
+import "../styles/global.css"
+import Header from "../components/Header.astro";
+import Headlayout from "./Headlayout.astro";
+---
+
+<Headlayout>
+		<Header />
+		<main class="Main">
+			<slot />
+		</main>
+</Headlayout>
+
+<style lang="scss">
+.Main {
+	display: grid;
+	place-items: center;
+	grid-template-columns: repeat(auto-fit, minmax(360px,1fr));
+	max-width: 1150px;
+	margin: 75px auto 50px;
+}
+</style>

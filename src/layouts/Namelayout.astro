@@ -1,0 +1,8 @@
+---
+import Headlayout from "./Headlayout.astro";
+const { title } = Astro.props
+---
+
+<Headlayout title={title}>
+    <slot />
+</Headlayout>
