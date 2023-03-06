@@ -1,5 +1,4 @@
 .Pokemon {
-    width: clamp(320px, 100%, 360px);
     height: 8rem;
     display: flex;
     align-items: center;
@@ -14,7 +13,6 @@
     .description {
         height: calc(100% - 2rem);
         width: 80%;
-        background: #45467c;
         border-radius: 25px;
         display: flex;
         flex-direction: column;

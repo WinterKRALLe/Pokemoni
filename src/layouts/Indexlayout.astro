@@ -8,17 +8,22 @@ import List from "../components/List";
 <Headlayout>
 		<Header />
 		<main class="Main">
-			<!-- <slot /> -->
 			<List client:load />
 		</main>
 </Headlayout>
 
 <style lang="scss">
 .Main {
-	display: grid;
-	place-items: center;
-	grid-template-columns: repeat(auto-fit, minmax(360px,1fr));
 	max-width: 1150px;
+	display: flex;
+	flex-wrap: wrap;
 	margin: 75px auto 50px;
+
+	> div {
+		flex: 1 1 340px;
+		div {
+
+		}
+	}
 }
 </style>
