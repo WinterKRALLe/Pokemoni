@@ -1,27 +1,28 @@
 import React, { useState } from 'react'
 
-const Search = (props) => {
+interface SearchBarProps {
+  onSearch: (searchTerm: string) => void;
+}
 
-    const [query, setQuery] = useState("")
+const Search: React.FC<SearchBarProps> = ({ onSearch }) => {
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        handleSearch(query);
-      };
-    
-      const handleInputChange = (e) => {
-        setQuery(e.target.value);
-      };
+  const [searchTerm, setSearchTerm] = useState("");
 
-      const handleSearch = (query) => {
-        // Perform search using query
-        console.log(`Searching for "${query}"...`);
-      };
+  const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    onSearch(searchTerm);
+    console.log(searchTerm)
+  };
 
   return (
-    <form onSubmit={handleSubmit}>
-        <input className={props.class} type="search" id="" placeholder="search" value={query} onChange={handleInputChange} />
-        <button type="submit">Hledat</button>
+    <form onSubmit={handleSearch}>
+    <input
+      type="text"
+      value={searchTerm}
+      onChange={(event) => setSearchTerm(event.target.value)}
+      placeholder="Search..."
+    />
+    <button type="submit">Search</button>
     </form>
   )
 }
