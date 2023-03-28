@@ -4,6 +4,7 @@ import Namelayout from "../layouts/Namelayout.astro";
 import { typeColor, typeIcon } from "./../switches/color_icon";
 
 import { fetchPokemon, fetchSpecies } from "../api/fetch";
+import Tabs from "../components/Tabs.astro";
 
 const { name } = Astro.params;
 
@@ -11,39 +12,6 @@ const pokemon = await fetchPokemon(name);
 if (pokemon === 404) return Astro.redirect("/404");
 
 const pokemonSpecies = await fetchSpecies(name);
-
-const evolution = await fetch(pokemonSpecies.evolution_chain.url).then((res) =>
-  res.json()
-);
-
-let firstEvo, secondEvo, thirdEvo;
-let firstEvolutionPokemon, secondEvolutionPokemon, thirdEvolutionPokemon;
-let secondEvoLevel, thirdEvoLevel;
-if (evolution) {
-  firstEvo = evolution.chain.species.name;
-  secondEvo = evolution.chain.evolves_to[0].species.name;
-  firstEvolutionPokemon = await fetchPokemon(firstEvo);
-  secondEvolutionPokemon = await fetchPokemon(secondEvo);
-  if (
-    evolution.chain.evolves_to[0] &&
-    evolution.chain.evolves_to[0].evolves_to[0] &&
-    evolution.chain.evolves_to[0].evolves_to[0].species
-  ) {
-    thirdEvo = evolution.chain.evolves_to[0].evolves_to[0].species.name;
-    thirdEvolutionPokemon = await fetchPokemon(thirdEvo);
-  }
-
-  secondEvoLevel = evolution.chain.evolves_to[0].evolution_details[0].min_level;
-  if (
-    evolution.chain.evolves_to[0] &&
-    evolution.chain.evolves_to[0].evolves_to[0] &&
-    evolution.chain.evolves_to[0].evolves_to[0].evolution_details[0]
-  ) {
-    thirdEvoLevel =
-      evolution.chain.evolves_to[0].evolves_to[0].evolution_details[0]
-        .min_level;
-  }
-}
 
 function convertKgToLb(kg: number): string {
   const lbPerKg = 2.20462;
@@ -62,18 +30,6 @@ function convertCmToFeetInches(cm: number): string {
 }
 const height = convertCmToFeetInches(pokemon.height * 10);
 
-function formatStatName(statName: string): string {
-  const formattedName = statName
-    .replace("special-attack", "SATK")
-    .replace("special-defense", "SDEF")
-    .replace("hp", "HP")
-    .replace("attack", "ATK")
-    .replace("defense", "DEF")
-    .replace("speed", "SPD");
-  // .replace(/(\b\w)/g, (match) => match.toUpperCase()); //first letter
-
-  return formattedName;
-}
 let type = pokemon.types[0].type.name;
 const color = typeColor(type);
 const icon = typeIcon(type);
@@ -87,12 +43,12 @@ if (type && pokemon.types[1]?.type.name) {
 ---
 
 <Namelayout title={name}>
-  <a href="/">&larr; Pokedex</a>
   <div id="bg">
     <div></div>
   </div>
 
   <div class="pokemon">
+    <a href="/" class="urlPrev">&larr; Pokedex</a>
     <div class="eww">
       <div class="name">{pokemon.name}</div>
       <div class="id">#{pokemon.id}</div>
@@ -127,102 +83,12 @@ if (type && pokemon.types[1]?.type.name) {
     <div class="desc">
       {pokemonSpecies.flavor_text_entries[6].flavor_text}
     </div>
-
-    <div class="tabs">
-      <input type="radio" name="tabs" id="tabStats" checked />
-      <label for="tabStats">Stats</label>
-      <section id="stats" class="tab-content">
-        <div class="koks">
-          <ul class="statname">
-            {pokemon.stats.map((p) => <li>{formatStatName(p.stat.name)}</li>)}
-          </ul>
-          <ul class="statval">
-            {pokemon.stats.map((p) => <li>{p.base_stat}</li>)}
-          </ul>
-          <ul class="progress-container">
-            {
-              pokemon.stats.map((p) => (
-                <li>
-                  <div>
-                    <span
-                      class="progess-bar"
-                      style={`width: ${p.base_stat / 1.75}%`}
-                    />
-                  </div>
-                </li>
-              ))
-            }
-          </ul>
-        </div>
-      </section>
-
-      <input type="radio" name="tabs" id="tabEvo" />
-      <label for="tabEvo">Evolutions</label>
-      <section id="evolution" class="tab-content">
-        <div class="kiks">
-          <div>
-            <div class="evoChain">
-              <div class="evo">
-                <img
-                  src={firstEvolutionPokemon.sprites.other.dream_world
-                    .front_default}
-                />
-                {firstEvo}
-              </div>
-              <div>Level {secondEvoLevel}</div>
-              <div class="evo">
-                <img
-                  src={secondEvolutionPokemon.sprites.other.dream_world
-                    .front_default}
-                />
-                {secondEvo}
-              </div>
-            </div>
-          </div>
-          {
-            thirdEvo ? (
-              <div>
-                <div class="evoChain">
-                  <div class="evo">
-                    <img
-                      src={
-                        secondEvolutionPokemon.sprites.other.dream_world
-                          .front_default
-                      }
-                    />
-                    {secondEvo}
-                  </div>
-                  <div>Level {thirdEvoLevel}</div>
-                  <div class="evo">
-                    <img
-                      src={
-                        thirdEvolutionPokemon.sprites.other.dream_world
-                          .front_default
-                      }
-                    />
-                    {thirdEvo}
-                  </div>
-                </div>
-              </div>
-            ) : null
-          }
-        </div>
-      </section>
-
-      <input type="radio" name="tabs" id="tabMoves" />
-      <label for="tabMoves">Moves</label>
-      <section id="moves" class="tab-content">
-        <div>
-          {pokemon.moves.map((p) => p.move.name)}
-        </div>
-      </section>
-    </div>
+    <Tabs pokemon={pokemon} pokemonSpecies={pokemonSpecies} color={color} />
   </div>
 
   <style lang="scss" define:vars={{ color, secondTypeColor }}>
     $rgb: rgb(var(--color));
     $secondRgb: rgb(var(--secondTypeColor));
-
     #bg {
       height: 100%;
       width: 100vw;
@@ -245,6 +111,19 @@ if (type && pokemon.types[1]?.type.name) {
       display: flex;
       flex-direction: column;
       justify-content: space-evenly;
+
+      .urlPrev {
+        color: #fefefe;
+        display: block;
+        margin: 1rem 0 1rem 1rem;
+        font-size: 18px;
+        font-weight: 600;
+
+        &:hover,
+        &:focus {
+          text-decoration: underline;
+        }
+      }
 
       .eww {
         display: flex;
@@ -269,8 +148,7 @@ if (type && pokemon.types[1]?.type.name) {
       }
 
       .pic {
-        display: block;
-        height: 25vh;
+        height: calc(100vh / 4);
 
         img {
           height: 100%;
@@ -284,21 +162,25 @@ if (type && pokemon.types[1]?.type.name) {
         display: flex;
         justify-content: center;
         font-size: 14px;
+        gap: 1rem;
 
         .typeIcon {
           height: 2.5rem;
+          width: 9rem;
           border-radius: 25px;
           display: flex;
-          padding: 0 2rem 0 0.5rem;
+          justify-content: center;
           align-items: center;
           text-transform: uppercase;
           color: white;
           font-weight: bold;
           box-shadow: rgba(var(--color), 0.7) 0px 0px 10px;
           background: $rgb;
+          padding: 0 2rem 0 0.5rem;
 
           &:nth-child(2) {
             background: $secondRgb;
+            box-shadow: rgba(var(--secondTypeColor), 0.7) 0px 0px 10px;
           }
         }
       }
@@ -333,125 +215,87 @@ if (type && pokemon.types[1]?.type.name) {
         text-align: center;
         margin: 1rem 0 2rem;
       }
-
-      .tabs {
-        display: flex;
-        flex-wrap: wrap;
-        max-width: 100%;
-        justify-content: center;
-        padding-inline: 2rem;
-
-        input[type="radio"] {
-          display: none;
-        }
-
-        label {
-          width: 7rem;
-          color: $rgb;
-          padding: 0.5rem 0;
-          text-transform: uppercase;
-          text-align: center;
-          font-weight: 600;
-          font-size: 0.875rem;
-          margin-bottom: 0.75rem;
-
-          &:hover {
-            cursor: pointer;
-          }
-
-          &:nth-child(2) {
-            margin-inline: 1rem;
-          }
-        }
-
-        section {
-          order: 1;
-          width: 100%;
-          display: none;
-        }
-
-        input[type="radio"]:checked + label {
-          background: $rgb;
-          color: white;
-          border-radius: 25px;
-          box-shadow: rgba(var(--color), 0.7) 0px 0px 10px;
-          transition: 0.2s;
-        }
-
-        input[type="radio"]:checked + label + section {
-          display: initial;
-        }
-
-        .koks {
-          display: flex;
-          gap: 1rem;
-          font-size: 14px;
-
-          ul li {
-            height: 1.25rem;
-            margin-top: 0.5rem;
-          }
-          .statname {
-            font-weight: 600;
-            color: $rgb;
-          }
-          .statval {
-            text-align: center;
-          }
-          .progress-container {
-            width: 100%;
-
-            li {
-              width: 100%;
-              display: flex;
-              align-items: center;
-
-              div {
-                width: 100%;
-                background: #e3e3e3;
-                border-radius: 25px;
-
-                span {
-                  display: block;
-                  border-radius: 25px;
-                  height: 10px;
-                  background: linear-gradient(
-                    to right,
-                    rgba(var(--color), 0.4),
-                    $rgb
-                  );
-                }
-              }
-            }
-          }
-        }
-
-        .kiks {
-          width: 100%;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-around;
-
-          .evoChain {
-            width: 100%;
-            display: flex;
-            justify-content: space-evenly;
-            align-items: center;
-
-            .evo {
-              display: flex;
-              flex-direction: column;
-              justify-content: center;
-              align-items: center;
-            }
-          }
-        }
-      }
+    }
+    .tabs {
+      background: red;
+      border-radius: 10px;
     }
 
-    @media screen only and (min-width: 769px) {
+    @media screen and (max-width: 768px) {
+      body {
+        font-size: calc(
+          12px + ((100vw - 320px) / 448) * 4
+        ); /* Responsive font size formula */
+      }
+    }
+  </style>
+  <style lang="scss" is:global define:vars={{ color }}>
+    $rgb: rgb(var(--color));
+    @media screen and (min-width: 769px) {
       .pokemon {
-        display: grid;
+        flex-direction: row;
+        flex-wrap: wrap;
+        overflow-x: hidden;
+
+        .eww {
+          width: 100%;
+          margin-left: 2rem;
+        }
+
+        .pic {
+          aspect-ratio: 1 / 1;
+          width: calc(100% / 4);
+          background: red;
+          border-radius: 10px;
+          border: 2px solid white;
+          order: 0;
+        }
+
+        .type {
+          order: 1;
+          display: block;
+          width: 100%;
+        }
+
+        .abilities {
+          order: 2;
+        }
+
+        .tabs {
+          border-radius: 10px;
+          border: 2px solid white;
+          width: 100%;
+          padding: 0;
+
+          .tab-content {
+            flex: 1;
+            display: block;
+            aspect-ratio: 2 / 1;
+            width: 50%;
+          }
+
+          #Stats {
+            background: purple;
+
+            .stats {
+              padding: 1rem;
+            }
+          }
+
+          #Evolution {
+            background: #e3e3e3;
+          }
+
+          .carouselbtn svg {
+            fill: black;
+          }
+
+          input[type="radio"],
+          label,
+          #Moves {
+            display: none;
+          }
+        }
       }
     }
   </style>

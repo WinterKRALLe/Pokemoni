@@ -94,13 +94,12 @@ const List = () => {
     })
   }, [isError, error.message, results, lastPostRef])
 
-  return isLoading
-    ? (
-      "loading..."
-    )
-    : (
-      <> {content} </>
-    )
+  return (
+    <>
+      {content}
+      {isLoading ? <Loader /> : null}
+    </>
+  )
 }
 
 export default List
