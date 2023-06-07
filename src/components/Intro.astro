@@ -1,0 +1,12 @@
+---
+const { name, id } = Astro.props;
+---
+
+<div class="flex justify-between items-end text-[#fefefe]">
+    <div
+        class="text-5xl mt-4 ml-4 font-medium first-letter:uppercase tracking-tighter"
+    >
+        {name}
+    </div>
+    <div class="pr-4">#{id}</div>
+</div>

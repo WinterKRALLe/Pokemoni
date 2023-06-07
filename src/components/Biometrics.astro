@@ -1,0 +1,55 @@
+---
+export interface Props {
+    color: string;
+    secondTypeColor?: string;
+    type: string;
+    secondType?: string;
+    icon: string;
+    secondTypeIcon?: string;
+    weight: string;
+    height: string;
+}
+
+const {
+    color,
+    secondTypeColor,
+    type,
+    secondType,
+    icon,
+    secondTypeIcon,
+    weight,
+    height,
+} = Astro.props as Props;
+---
+
+<div class={`flex justify-center text-sm gap-4`}>
+    <span
+        class="h-10 w-36 rounded-3xl flex justify-center items-center uppercase text-[#FFFFFF] font-bold pr-8 pl-2 fill-white"
+        style={`background: rgb(${color}); box-shadow: rgba(${color}, 0.7) 0px 0px 10px;`}
+        ><Fragment set:html={icon} />{type}</span
+    >
+    {
+        secondTypeColor ? (
+            <span
+                class="h-10 w-36 rounded-3xl flex justify-center items-center uppercase text-[#FFFFFF] font-bold pr-8 pl-2 fill-white"
+                style={`background: rgb(${secondTypeColor}); box-shadow: rgba(${secondTypeColor}, 0.7) 0px 0px 10px;`}
+            >
+                <Fragment set:html={secondTypeIcon} />
+                {secondType}
+            </span>
+        ) : null
+    }
+</div>
+<div class="flex justify-center gap-8 text-center mt-8 mb-4">
+    <div class="flex flex-col">
+        <Fragment set:html={weight} /><span class="pt-2 text-xs text-[#707070]"
+            >Weight</span
+        >
+    </div>
+    <div class="h-auto w-0.5 bg-gray-500"></div>
+    <div class="flex flex-col">
+        <Fragment set:html={height} /><span class="pt-2 text-xs text-[#707070]"
+            >Height</span
+        >
+    </div>
+</div>

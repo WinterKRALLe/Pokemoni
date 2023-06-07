@@ -1,0 +1,50 @@
+---
+export interface Props {
+    color: string;
+    pokeData: any;
+}
+
+const { color, pokeData } = Astro.props as Props;
+
+function formatStatName(statName: string): string {
+    const formattedName = statName
+        .replace("special-attack", "SATK")
+        .replace("special-defense", "SDEF")
+        .replace("hp", "HP")
+        .replace("attack", "ATK")
+        .replace("defense", "DEF")
+        .replace("speed", "SPD");
+    // .replace(/(\b\w)/g, (match) => match.toUpperCase()); //first letter
+
+    return formattedName;
+}
+---
+
+<div class="h-full flex items-center gap-4 text-sm">
+    <ul class="font-semibold" style={`color: rgb(${color})`}>
+        {
+            pokeData.stats.map((p) => (
+                <li class="h-5 mt-2">{formatStatName(p.stat.name)}</li>
+            ))
+        }
+    </ul>
+    <ul class="text-center">
+        {pokeData.stats.map((p) => <li class="h-5 mt-2">{p.base_stat}</li>)}
+    </ul>
+    <ul class="w-full">
+        {
+            pokeData.stats.map((p) => (
+                <li class="w-full flex items-center h-5 mt-2">
+                    <div class="w-full bg-[#e3e3e3] rounded-3xl">
+                        <span
+                            class="block rounded-3xl h-[10px]"
+                            style={`width: ${
+                                p.base_stat / 1.75
+                            }%; background: linear-gradient(to right, rgba(${color}, 0.4), rgb(${color}))`}
+                        />
+                    </div>
+                </li>
+            ))
+        }
+    </ul>
+</div>

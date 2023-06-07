@@ -1,163 +1,40 @@
 ---
-import { fetchPokemon } from "../api/fetch";
-import arrowForward from "../assets/arrowForward.svg?raw";
-import arrowBackward from "../assets/arrowBackward.svg?raw";
+import Stats from "./Stats.astro";
+import Evolution from "./Evolution.astro";
+import Moves from "./Moves.astro";
 
 const { pokemon, pokemonSpecies, color } = Astro.props;
-
-const evolution = await fetch(pokemonSpecies.evolution_chain.url).then((res) =>
-    res.json()
-);
-
-let firstEvo, secondEvo, thirdEvo;
-let firstEvolutionPokemon, secondEvolutionPokemon, thirdEvolutionPokemon;
-let secondEvoLevel, thirdEvoLevel;
-if (evolution) {
-    firstEvo = evolution.chain.species.name;
-    secondEvo = evolution.chain.evolves_to[0].species.name;
-    firstEvolutionPokemon = await fetchPokemon(firstEvo);
-    secondEvolutionPokemon = await fetchPokemon(secondEvo);
-    if (
-        evolution.chain.evolves_to[0] &&
-        evolution.chain.evolves_to[0].evolves_to[0] &&
-        evolution.chain.evolves_to[0].evolves_to[0].species
-    ) {
-        thirdEvo = evolution.chain.evolves_to[0].evolves_to[0].species.name;
-        thirdEvolutionPokemon = await fetchPokemon(thirdEvo);
-    }
-
-    secondEvoLevel =
-        evolution.chain.evolves_to[0].evolution_details[0].min_level;
-    if (
-        evolution.chain.evolves_to[0] &&
-        evolution.chain.evolves_to[0].evolves_to[0] &&
-        evolution.chain.evolves_to[0].evolves_to[0].evolution_details[0]
-    ) {
-        thirdEvoLevel =
-            evolution.chain.evolves_to[0].evolves_to[0].evolution_details[0]
-                .min_level;
-    }
-}
-
-function formatStatName(statName: string): string {
-    const formattedName = statName
-        .replace("special-attack", "SATK")
-        .replace("special-defense", "SDEF")
-        .replace("hp", "HP")
-        .replace("attack", "ATK")
-        .replace("defense", "DEF")
-        .replace("speed", "SPD");
-    // .replace(/(\b\w)/g, (match) => match.toUpperCase()); //first letter
-
-    return formattedName;
-}
 ---
 
-<div class="tabs">
-    <input type="radio" name="tabs" id="tabStats" checked />
-    <label for="tabStats">Stats</label>
-    <section id="Stats" class="tab-content">
-        <div class="stats">
-            <ul class="statname">
-                {
-                    pokemon.stats.map((p) => (
-                        <li>{formatStatName(p.stat.name)}</li>
-                    ))
-                }
-            </ul>
-            <ul class="statval">
-                {pokemon.stats.map((p) => <li>{p.base_stat}</li>)}
-            </ul>
-            <ul class="progress-container">
-                {
-                    pokemon.stats.map((p) => (
-                        <li>
-                            <div>
-                                <span
-                                    class="progess-bar"
-                                    style={`width: ${p.base_stat / 1.75}%`}
-                                />
-                            </div>
-                        </li>
-                    ))
-                }
-            </ul>
-        </div>
+<div class="flex flex-wrap justify-center px-8 gap-4 bg-[#fefefe]">
+    <input type="radio" name="tabs" id="tabStats" checked class="hidden" />
+    <label
+        for="tabStats"
+        class="w-1/4 py-2 px-4 uppercase font-semibold mb-3 flex justify-center items-center hover:cursor-pointer"
+        >Stats</label
+    >
+    <section id="Stats" class="order-1 w-full hidden">
+        <Stats color={color} pokeData={pokemon} />
     </section>
 
-    <input type="radio" name="tabs" id="tabEvo" />
-    <label for="tabEvo">Evolutions</label>
-    <section id="Evolution" class="tab-content">
-        <div class="evolution carousel">
-            <div class="carouselContainer">
-                <div class="carouselSlide selected">
-                    <div class="evoChain">
-                        <!-- <div class="evo"> -->
-                        <a href={firstEvo} class="evo">
-                            <img
-                                src={firstEvolutionPokemon.sprites.other
-                                    .dream_world.front_default}
-                            />
-                            <span>{firstEvo}</span>
-                        </a>
-                        <!-- </div> -->
-                        <div class="evo">Level {secondEvoLevel}</div>
-                        <!-- <div class="evo"> -->
-                        <a href={secondEvo} class="evo">
-                            <img
-                                src={secondEvolutionPokemon.sprites.other
-                                    .dream_world.front_default}
-                            />
-                            <span>{secondEvo}</span>
-                        </a>
-                        <!-- </div> -->
-                    </div>
-                </div>
-                {
-                    thirdEvo ? (
-                        <div class="carouselSlide">
-                            <div class="evoChain">
-                                <a href={secondEvo} class="evo">
-                                    <img
-                                        src={
-                                            secondEvolutionPokemon.sprites.other
-                                                .dream_world.front_default
-                                        }
-                                    />
-                                    <span>{secondEvo}</span>
-                                </a>
-                                <div class="evo">Level {thirdEvoLevel}</div>
-                                <a href={thirdEvo} class="evo">
-                                    <img
-                                        src={
-                                            thirdEvolutionPokemon.sprites.other
-                                                .dream_world.front_default
-                                        }
-                                    />
-                                    <span>{thirdEvo}</span>
-                                </a>
-                            </div>
-                        </div>
-                    ) : null
-                }
-            </div>
-            <div class="controls">
-                <button class="carouselbtn carouselbtnleft">
-                    <Fragment set:html={arrowBackward} />
-                </button>
-                <button class="carouselbtn carouselbtnright">
-                    <Fragment set:html={arrowForward} />
-                </button>
-            </div>
-        </div>
+    <input type="radio" name="tabs" id="tabEvo" class="hidden" />
+    <label
+        for="tabEvo"
+        class="w-1/3 py-2 px-4 uppercase font-semibold mb-3 flex justify-center items-center hover:cursor-pointer"
+        >Evolutions</label
+    >
+    <section id="Evolution" class="order-1 w-full hidden">
+        <Evolution pokemonSpecies={pokemonSpecies} />
     </section>
 
-    <input type="radio" name="tabs" id="tabMoves" />
-    <label for="tabMoves">Moves</label>
-    <section id="Moves" class="tab-content">
-        <div class="moves">
-            {pokemon.moves.map((p) => p.move.name)}
-        </div>
+    <input type="radio" name="tabs" id="tabMoves" class="hidden" />
+    <label
+        for="tabMoves"
+        class="w-1/4 py-2 px-4 uppercase font-semibold mb-3 flex justify-center items-center hover:cursor-pointer"
+        >Moves</label
+    >
+    <section id="Moves" class="order-1 w-full hidden">
+        <Moves pokeData={pokemon} />
     </section>
 </div>
 
@@ -169,7 +46,6 @@ function formatStatName(statName: string): string {
         const slides = [...carousel.querySelectorAll(".carouselSlide")];
         const prevBtn = carousel.querySelector(".carouselbtnleft");
         const nextBtn = carousel.querySelector(".carouselbtnright");
-        const dots = [...carousel.querySelectorAll(".dot")];
 
         nextBtn.addEventListener("click", () =>
             changeCurrentSlide(slides, true)
@@ -221,52 +97,9 @@ function formatStatName(statName: string): string {
     }
 </script>
 
-<style lang="scss" define:vars={{ color }}>
-    // @media screen and (max-width: 768px) {
-    $rgb: rgb(var(--color));
-
-    .tabs {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        padding-inline: 2rem;
-        gap: 1rem;
-        background: #fefefe;
-
-        @media screen and (max-width: 768px) {
-            max-width: 768px;
-        }
-
-        font-size: calc(12px + ((100vw - 320px) / 448) * 4);
-
-        input[type="radio"] {
-            display: none;
-        }
-
-        label {
-            width: calc(100% / 4);
-            color: $rgb;
-            padding: 0.5rem 1rem;
-            text-transform: uppercase;
-            font-weight: 600;
-            margin-bottom: 0.75rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            &:hover {
-                cursor: pointer;
-            }
-        }
-    }
-    section {
-        order: 1;
-        width: 100%;
-        display: none;
-    }
-
+<style lang="css" define:vars={{ color }}>
     input[type="radio"]:checked + label {
-        background: $rgb;
+        background: rgb(var(--color));
         color: white;
         border-radius: 25px;
         box-shadow: rgba(var(--color), 0.7) 0px 0px 10px;
@@ -275,127 +108,5 @@ function formatStatName(statName: string): string {
 
     input[type="radio"]:checked + label + section {
         display: initial;
-    }
-
-    .stats {
-        height: 100%;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        font-size: 14px;
-
-        ul li {
-            height: 1.25rem;
-            margin-top: 0.5rem;
-        }
-        .statname {
-            font-weight: 600;
-            color: $rgb;
-        }
-        .statval {
-            text-align: center;
-        }
-        .progress-container {
-            width: 100%;
-
-            li {
-                width: 100%;
-                display: flex;
-                align-items: center;
-
-                div {
-                    width: 100%;
-                    background: #e3e3e3;
-                    border-radius: 25px;
-
-                    span {
-                        display: block;
-                        border-radius: 25px;
-                        height: 10px;
-                        background: linear-gradient(
-                            to right,
-                            rgba(var(--color), 0.4),
-                            $rgb
-                        );
-                    }
-                }
-            }
-        }
-    }
-
-    .carousel {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        position: relative;
-        height: 100%;
-        width: 100%;
-
-        .carouselContainer {
-            height: 100%;
-            width: 100%;
-
-            overflow: hidden;
-
-            display: flex;
-        }
-
-        .carouselSlide {
-            min-width: 100%;
-            padding-inline: 2rem;
-        }
-        .carouselbtn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .carouselbtnleft {
-            left: -1%;
-        }
-
-        .carouselbtnright {
-            right: -2%;
-        }
-    }
-
-    .evoChain {
-        height: 100%;
-        width: 100%;
-        display: flex;
-        align-items: center;
-
-        .evo {
-            width: calc(100% / 3);
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            position: relative;
-
-            span {
-                position: absolute;
-                bottom: 0;
-                margin-bottom: 1rem;
-            }
-
-            span::first-letter {
-                text-transform: uppercase;
-            }
-
-            img {
-                max-width: 100%;
-                height: auto;
-                display: block;
-            }
-        }
     }
 </style>

@@ -1,0 +1,10 @@
+---
+export interface Props {
+    image: string;
+}
+const { image } = Astro.props as Props;
+---
+
+<div class="h-[calc(100vh/4)]">
+    <img src={image} class="h-full w-auto block mx-auto" />
+</div>

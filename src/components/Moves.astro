@@ -1,0 +1,7 @@
+---
+const { pokeData } = Astro.props;
+---
+
+<div class="moves">
+    {pokeData.moves.map((p) => p.move.name)}
+</div>

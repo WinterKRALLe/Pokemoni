@@ -1,22 +1,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700&display=swap');
 
-* {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        font-family: "Montserrat", sans-serif;
+        background: #f0f0f0;
+    }
 }
-body {
-    font-family: "Montserrat", sans-serif;
-    background: #f0f0f0;
+
+.lg-box {
+    @apply rounded-3xl bg-black bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-10 w-full p-12;
 }
-li {
-    list-style-type: none;
+
+@media screen and (max-width: 768px) {
+    body {
+        font-size: calc(12px + ((100vw - 320px) / 448) * 4);
+        /* Responsive font size formula */
+    }
 }
+
 a {
     text-decoration: none;
     color: inherit;
 }
+
 svg {
-    fill: white;
+    /* fill: white; */
     transform: scale(.6);
 }

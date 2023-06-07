@@ -5,6 +5,9 @@ import { typeColor, typeIcon } from "./../switches/color_icon";
 
 import { fetchPokemon, fetchSpecies } from "../api/fetch";
 import Tabs from "../components/Tabs.astro";
+import Biometrics from "../components/Biometrics.astro";
+import Artwork from "../components/Artwork.astro";
+import Intro from "../components/Intro.astro";
 
 const { name } = Astro.params;
 
@@ -34,6 +37,8 @@ let type = pokemon.types[0].type.name;
 const color = typeColor(type);
 const icon = typeIcon(type);
 
+const image = pokemon.sprites.other["official-artwork"].front_default;
+
 let secondType, secondTypeIcon, secondTypeColor;
 if (type && pokemon.types[1]?.type.name) {
   secondType = pokemon.types[1].type.name;
@@ -43,260 +48,94 @@ if (type && pokemon.types[1]?.type.name) {
 ---
 
 <Namelayout title={name}>
-  <div id="bg">
-    <div></div>
+  <div
+    id="bg"
+    class="h-full w-screen absolute -z-10 bg-[#fefefe] block lg:hidden"
+  >
+    <div
+      class="h-[30vh] z-10 rounded-[0_0_50%_50%_/_94%_94%_6%_6%]"
+      style=`background: linear-gradient(rgba(${color}, 0.7), rgb(${color}))`
+    >
+    </div>
   </div>
+  <div class="flex flex-col justify-evenly">
+    <a
+      href="/"
+      class="text-[#fefefe] block my-4 ml-4 text-base font-semibold hover:underline"
+      >&larr; Pokedex</a
+    >
+    <div
+      class="lg:flex lg:flex-col lg:w-screen lg:justify-start lg:items-start lg:gap-4"
+    >
+      <main
+        class="lg:lg-box lg:flex lg:w-full lg:h-auto lg:items-start lg:justify-start lg:gap-4"
+      >
+        <aside class="lg:lg-box lg:w-1/4 lg:block hidden">
+          <Biometrics
+            color={color}
+            secondTypeColor={secondTypeColor}
+            type={type}
+            secondType={secondType}
+            icon={icon}
+            secondTypeIcon={secondTypeIcon}
+            weight={weight}
+            height={height}
+          />
+        </aside>
+        <div class="lg:flex lg:flex-col lg:w-1/2 lg:gap-4">
+          <div class=":lglg-box lg:w-full">
+            <Intro name={pokemon.name} id={pokemon.id} />
+          </div>
 
-  <div class="pokemon">
-    <a href="/" class="urlPrev">&larr; Pokedex</a>
-    <div class="eww">
-      <div class="name">{pokemon.name}</div>
-      <div class="id">#{pokemon.id}</div>
-    </div>
+          <div
+            class="lg:relative lg:w-full lg:aspect-square lg:flex lg:justify-center lg:items-center"
+          >
+            <div
+              class="lg:absolute lg:top-0 lg:left-0 lg:bottom-0 lg:right-0 lg:border-4 lg:border-solid lg:rounded-full"
+              style={`border-color: rgb(${color})`}
+            >
+            </div>
+            <div
+              class="lg:absolute lg:top-3 lg:left-3 lg:bottom-3 lg:right-3 lg:border-2 lg:border-solid lg:rounded-full"
+              style={`border-color: rgba(${color}, 0.4)`}
+            >
+            </div>
+            <div
+              class="lg:absolute lg:top-1 lg:left-1 lg:bottom-1 lg:right-1 lg:border-4 lg:border-dotted lg:rounded-full lg:animate-spin-slow"
+              style={`border-color: rgba(${color}, 0.4)`}
+            >
+            </div>
 
-    <div class="pic">
-      <img src={pokemon.sprites.other["official-artwork"].front_default} />
-    </div>
+            <Artwork image={image} />
+          </div>
+        </div>
+        <div class="block lg:hidden">
+          <Biometrics
+            color={color}
+            secondTypeColor={secondTypeColor}
+            type={type}
+            secondType={secondType}
+            icon={icon}
+            secondTypeIcon={secondTypeIcon}
+            weight={weight}
+            height={height}
+          />
+        </div>
+        <aside class="lg:w-1/4">
+          <div class="lg:lg-box">
+            <div class="px-3 text-center mt-4 mb-8 lg::p-0 lg:m-0">
+              {pokemonSpecies.flavor_text_entries[3].flavor_text}
+              {pokemonSpecies.flavor_text_entries[4].flavor_text}
+              {pokemonSpecies.flavor_text_entries[5].flavor_text}
+              {pokemonSpecies.flavor_text_entries[6].flavor_text}
+            </div>
+          </div>
+        </aside>
+      </main>
 
-    <div class="type">
-      <span class="typeIcon"><Fragment set:html={icon} />{type}</span>
-      {
-        secondTypeColor ? (
-          <span class="typeIcon">
-            <Fragment set:html={secondTypeIcon} />
-            {secondType}
-          </span>
-        ) : null
-      }
+      <footer class="flex-none">
+        <Tabs pokemon={pokemon} pokemonSpecies={pokemonSpecies} color={color} />
+      </footer>
     </div>
-
-    <div class="abilities">
-      <div class="ability">
-        <Fragment set:html={weight} /><span>Weight</span>
-      </div>
-      <div class="line"></div>
-      <div class="ability">
-        <Fragment set:html={height} /><span>Height</span>
-      </div>
-    </div>
-
-    <div class="desc">
-      {pokemonSpecies.flavor_text_entries[6].flavor_text}
-    </div>
-    <Tabs pokemon={pokemon} pokemonSpecies={pokemonSpecies} color={color} />
   </div>
-
-  <style lang="scss" define:vars={{ color, secondTypeColor }}>
-    $rgb: rgb(var(--color));
-    $secondRgb: rgb(var(--secondTypeColor));
-    #bg {
-      height: 100%;
-      width: 100vw;
-      position: absolute;
-      z-index: -10;
-      background: #fefefe;
-
-      > div {
-        height: 30vh;
-        background: linear-gradient(rgba(var(--color), 0.7), $rgb);
-        border-radius: 0 0 50% 50% / 94% 94% 6% 6%;
-        z-index: 10;
-      }
-    }
-
-    .pokemon {
-      // max-width: 1200px;
-      // margin: 0 auto;
-
-      display: flex;
-      flex-direction: column;
-      justify-content: space-evenly;
-
-      .urlPrev {
-        color: #fefefe;
-        display: block;
-        margin: 1rem 0 1rem 1rem;
-        font-size: 18px;
-        font-weight: 600;
-
-        &:hover,
-        &:focus {
-          text-decoration: underline;
-        }
-      }
-
-      .eww {
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        color: #fefefe;
-
-        .id {
-          padding: 0 1rem 0 0;
-        }
-
-        .name {
-          font-size: 3rem;
-          padding: 1rem 0 0 1rem;
-          font-weight: 500;
-          letter-spacing: -2px;
-
-          &::first-letter {
-            text-transform: uppercase;
-          }
-        }
-      }
-
-      .pic {
-        height: calc(100vh / 4);
-
-        img {
-          height: 100%;
-          width: auto;
-          display: block;
-          margin-inline: auto;
-        }
-      }
-
-      .type {
-        display: flex;
-        justify-content: center;
-        font-size: 14px;
-        gap: 1rem;
-
-        .typeIcon {
-          height: 2.5rem;
-          width: 9rem;
-          border-radius: 25px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          text-transform: uppercase;
-          color: white;
-          font-weight: bold;
-          box-shadow: rgba(var(--color), 0.7) 0px 0px 10px;
-          background: $rgb;
-          padding: 0 2rem 0 0.5rem;
-
-          &:nth-child(2) {
-            background: $secondRgb;
-            box-shadow: rgba(var(--secondTypeColor), 0.7) 0px 0px 10px;
-          }
-        }
-      }
-
-      .abilities {
-        display: flex;
-        justify-content: center;
-        gap: 2rem;
-        text-align: center;
-        margin: 2rem 0 1rem;
-
-        .line {
-          height: auto;
-          width: 2px;
-          background: gray;
-        }
-
-        .ability {
-          display: flex;
-          flex-direction: column;
-
-          span {
-            padding-top: 0.5rem;
-            font-size: 0.75rem;
-            color: #707070;
-          }
-        }
-      }
-
-      .desc {
-        padding-inline: 0.75rem;
-        text-align: center;
-        margin: 1rem 0 2rem;
-      }
-    }
-    .tabs {
-      background: red;
-      border-radius: 10px;
-    }
-
-    @media screen and (max-width: 768px) {
-      body {
-        font-size: calc(
-          12px + ((100vw - 320px) / 448) * 4
-        ); /* Responsive font size formula */
-      }
-    }
-  </style>
-  <style lang="scss" is:global define:vars={{ color }}>
-    $rgb: rgb(var(--color));
-    @media screen and (min-width: 769px) {
-      .pokemon {
-        flex-direction: row;
-        flex-wrap: wrap;
-        overflow-x: hidden;
-
-        .eww {
-          width: 100%;
-          margin-left: 2rem;
-        }
-
-        .pic {
-          aspect-ratio: 1 / 1;
-          width: calc(100% / 4);
-          background: red;
-          border-radius: 10px;
-          border: 2px solid white;
-          order: 0;
-        }
-
-        .type {
-          order: 1;
-          display: block;
-          width: 100%;
-        }
-
-        .abilities {
-          order: 2;
-        }
-
-        .tabs {
-          border-radius: 10px;
-          border: 2px solid white;
-          width: 100%;
-          padding: 0;
-
-          .tab-content {
-            flex: 1;
-            display: block;
-            aspect-ratio: 2 / 1;
-            width: 50%;
-          }
-
-          #Stats {
-            background: purple;
-
-            .stats {
-              padding: 1rem;
-            }
-          }
-
-          #Evolution {
-            background: #e3e3e3;
-          }
-
-          .carouselbtn svg {
-            fill: black;
-          }
-
-          input[type="radio"],
-          label,
-          #Moves {
-            display: none;
-          }
-        }
-      }
-    }
-  </style>
 </Namelayout>
