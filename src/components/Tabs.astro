@@ -1,16 +1,16 @@
 ---
 import Stats from "./Stats.astro";
 import Evolution from "./Evolution.astro";
-import Moves from "./Moves.astro";
+import Weaknesses from "./Weaknesses.astro";
 
-const { pokemon, pokemonSpecies, color } = Astro.props;
+const { pokemon, pokemonSpecies, color, type } = Astro.props;
 ---
 
-<div class="flex flex-wrap justify-center px-8 gap-4 bg-[#fefefe]">
+<div class="flex flex-wrap justify-center px-8 bg-[#fefefe]">
     <input type="radio" name="tabs" id="tabStats" checked class="hidden" />
     <label
         for="tabStats"
-        class="w-1/4 py-2 px-4 uppercase font-semibold mb-3 flex justify-center items-center hover:cursor-pointer"
+        class="w-1/3 py-2 px-4 uppercase font-semibold mb-3 flex justify-center items-center hover:cursor-pointer"
         >Stats</label
     >
     <section id="Stats" class="order-1 w-full hidden">
@@ -27,14 +27,14 @@ const { pokemon, pokemonSpecies, color } = Astro.props;
         <Evolution pokemonSpecies={pokemonSpecies} />
     </section>
 
-    <input type="radio" name="tabs" id="tabMoves" class="hidden" />
+    <input type="radio" name="tabs" id="tabWeaknesses" class="hidden" />
     <label
-        for="tabMoves"
-        class="w-1/4 py-2 px-4 uppercase font-semibold mb-3 flex justify-center items-center hover:cursor-pointer"
-        >Moves</label
+        for="tabWeaknesses"
+        class="w-1/3 py-2 px-4 uppercase font-semibold mb-3 flex justify-center items-center hover:cursor-pointer"
+        >Weaknesses</label
     >
-    <section id="Moves" class="order-1 w-full hidden">
-        <Moves pokeData={pokemon} />
+    <section id="Weaknesses" class="order-1 w-full hidden">
+        <Weaknesses type={type} />
     </section>
 </div>
 

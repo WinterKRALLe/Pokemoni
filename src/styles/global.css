@@ -7,12 +7,12 @@
 @layer base {
     body {
         font-family: "Montserrat", sans-serif;
-        background: #f0f0f0;
+        background: #fafafa;
     }
 }
 
 .lg-box {
-    @apply rounded-3xl bg-black bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-10 w-full p-12;
+    @apply rounded-3xl bg-black bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-10 p-12;
 }
 
 @media screen and (max-width: 768px) {

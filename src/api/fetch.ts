@@ -21,3 +21,8 @@ export const fetchSpecies = async (name: string) => {
   const url = `${POKE_URL}pokemon-species/${name}`
   return fetchJson(url)
 }
+
+export const fetchDamage = async (name: string) => {
+  const url = `${POKE_URL}type/${name}`
+  return fetchJson(url)
+}

@@ -1,5 +1,8 @@
 ---
 import Namelayout from "../layouts/Namelayout.astro";
+import Stats from "../components/Stats.astro";
+import Evolution from "../components/Evolution.astro";
+import Weaknesses from "../components/Weaknesses.astro";
 
 import { typeColor, typeIcon } from "./../switches/color_icon";
 
@@ -15,6 +18,8 @@ const pokemon = await fetchPokemon(name);
 if (pokemon === 404) return Astro.redirect("/404");
 
 const pokemonSpecies = await fetchSpecies(name);
+if (pokemonSpecies === 404) console.log("nejde");
+// console.log(JSON.stringify(pokemonSpecies));
 
 function convertKgToLb(kg: number): string {
   const lbPerKg = 2.20462;
@@ -34,6 +39,7 @@ function convertCmToFeetInches(cm: number): string {
 const height = convertCmToFeetInches(pokemon.height * 10);
 
 let type = pokemon.types[0].type.name;
+
 const color = typeColor(type);
 const icon = typeIcon(type);
 
@@ -49,46 +55,40 @@ if (type && pokemon.types[1]?.type.name) {
 
 <Namelayout title={name}>
   <div
-    id="bg"
-    class="h-full w-screen absolute -z-10 bg-[#fefefe] block lg:hidden"
+    class="flex flex-col max-w-screen-3xl w-full h-full absolute top-0 bottom-0 left-1/2 -translate-x-1/2"
   >
-    <div
-      class="h-[30vh] z-10 rounded-[0_0_50%_50%_/_94%_94%_6%_6%]"
-      style=`background: linear-gradient(rgba(${color}, 0.7), rgb(${color}))`
-    >
+    <div id="bg" class="w-full absolute -z-10">
+      <div
+        class="h-[30vh] z-10 rounded-[0_0_50%_50%_/_94%_94%_6%_6%] lg:hidden"
+        style=`background: linear-gradient(rgba(${color}, 0.7), rgb(${color}))`
+      >
+      </div>
+      <div
+        class="h-[15vh] z-10 rounded-[94%_94%_6%_6%/_0_0_50%_50%] hidden lg:block"
+        style=`background: linear-gradient(rgba(${color}, 0.7), rgb(${color}))`
+      >
+      </div>
     </div>
-  </div>
-  <div class="flex flex-col justify-evenly">
     <a
       href="/"
       class="text-[#fefefe] block my-4 ml-4 text-base font-semibold hover:underline"
       >&larr; Pokedex</a
     >
-    <div
-      class="lg:flex lg:flex-col lg:w-screen lg:justify-start lg:items-start lg:gap-4"
-    >
-      <main
-        class="lg:lg-box lg:flex lg:w-full lg:h-auto lg:items-start lg:justify-start lg:gap-4"
-      >
-        <aside class="lg:lg-box lg:w-1/4 lg:block hidden">
-          <Biometrics
-            color={color}
-            secondTypeColor={secondTypeColor}
-            type={type}
-            secondType={secondType}
-            icon={icon}
-            secondTypeIcon={secondTypeIcon}
-            weight={weight}
-            height={height}
-          />
-        </aside>
-        <div class="lg:flex lg:flex-col lg:w-1/2 lg:gap-4">
-          <div class=":lglg-box lg:w-full">
-            <Intro name={pokemon.name} id={pokemon.id} />
+    <div class="lg:flex lg:flex-col lg:m-6 lg:mt-0 lg:gap-8">
+      <div class='w-full"'>
+        <Intro name={pokemon.name} id={pokemon.id} color={color} />
+      </div>
+      <main class="lg:flex lg:w-full lg:h-auto lg:gap-8">
+        <aside
+          class="lg:w-full lg:flex lg:flex-col hidden lg:justify-center lg:flex-1"
+        >
+          <div class="w-full lg-box h-full">
+            <Weaknesses type={type} />
           </div>
-
+        </aside>
+        <div class="lg:flex lg:flex-col lg:w-full flex-1 lg:gap-8">
           <div
-            class="lg:relative lg:w-full lg:aspect-square lg:flex lg:justify-center lg:items-center"
+            class="lg:relative lg:w-full lg:h-auto lg:block lg:mx-auto lg:max-w-md"
           >
             <div
               class="lg:absolute lg:top-0 lg:left-0 lg:bottom-0 lg:right-0 lg:border-4 lg:border-solid lg:rounded-full"
@@ -102,11 +102,23 @@ if (type && pokemon.types[1]?.type.name) {
             </div>
             <div
               class="lg:absolute lg:top-1 lg:left-1 lg:bottom-1 lg:right-1 lg:border-4 lg:border-dotted lg:rounded-full lg:animate-spin-slow"
-              style={`border-color: rgba(${color}, 0.4)`}
+              style={`border-color: rgba(${color}, 0.7)`}
             >
             </div>
 
             <Artwork image={image} />
+          </div>
+          <div class="lg-box w-full max-w-md h-fit lg:block mx-auto hidden">
+            <Biometrics
+              color={color}
+              secondTypeColor={secondTypeColor}
+              type={type}
+              secondType={secondType}
+              icon={icon}
+              secondTypeIcon={secondTypeIcon}
+              weight={weight}
+              height={height}
+            />
           </div>
         </div>
         <div class="block lg:hidden">
@@ -121,20 +133,38 @@ if (type && pokemon.types[1]?.type.name) {
             height={height}
           />
         </div>
-        <aside class="lg:w-1/4">
-          <div class="lg:lg-box">
-            <div class="px-3 text-center mt-4 mb-8 lg::p-0 lg:m-0">
-              {pokemonSpecies.flavor_text_entries[3].flavor_text}
-              {pokemonSpecies.flavor_text_entries[4].flavor_text}
-              {pokemonSpecies.flavor_text_entries[5].flavor_text}
-              {pokemonSpecies.flavor_text_entries[6].flavor_text}
-            </div>
+        <aside
+          class="lg:w-full hidden lg:flex lg:items-center lg-box lg:flex-1 lg:p-0"
+        >
+          <div class="p-12 text-base">
+            {pokemonSpecies.flavor_text_entries[0]?.flavor_text}
+            {pokemonSpecies.flavor_text_entries[3]?.flavor_text}
+            {pokemonSpecies.flavor_text_entries[4]?.flavor_text}
+            {pokemonSpecies.flavor_text_entries[5]?.flavor_text}
+            {pokemonSpecies.flavor_text_entries[6]?.flavor_text}
           </div>
         </aside>
+        <div class="px-3 mt-4 mb-8 lg:hidden block">
+          {pokemonSpecies.flavor_text_entries[6]?.flavor_text}
+        </div>
       </main>
 
-      <footer class="flex-none">
-        <Tabs pokemon={pokemon} pokemonSpecies={pokemonSpecies} color={color} />
+      <footer class="block lg:hidden">
+        <Tabs
+          pokemon={pokemon}
+          pokemonSpecies={pokemonSpecies}
+          color={color}
+          type={type}
+        />
+      </footer>
+
+      <footer class="hidden lg:flex lg:gap-8 w-full">
+        <div class="w-1/2 lg-box">
+          <Stats color={color} pokeData={pokemon} />
+        </div>
+        <div class="w-1/2 lg-box">
+          <Evolution pokemonSpecies={pokemonSpecies} />
+        </div>
       </footer>
     </div>
   </div>

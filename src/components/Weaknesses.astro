@@ -1,0 +1,49 @@
+---
+const { type } = Astro.props;
+import { fetchDamage } from "../api/fetch";
+import { typeColor } from "../switches/color_icon";
+
+const pokemonDamage = await fetchDamage(type);
+
+const doubleDamageFrom = pokemonDamage.damage_relations.double_damage_from.map(
+    (type: any) => type.name
+);
+const halfDamageFrom = pokemonDamage.damage_relations.half_damage_from.map(
+    (type: any) => type.name
+);
+---
+
+<div class="w-full h-full flex flex-col justify-center gap-4 lg:gap-10">
+    <div class="flex gap-4 flex-wrap justify-start">
+        <div class="w-full">Double damage from:</div>
+        {
+            doubleDamageFrom.map((d) => {
+                let cc = typeColor(d);
+                return (
+                    <span
+                        class="h-10 w-32 rounded-3xl flex justify-center items-center uppercase text-[#FFFFFF] font-bold pr-8 pl-2 fill-white relative after:absolute after:top-1/2 after:right-1 after:w-8 after:h-8 after:border-2 after:border-solid after:border-white after:rounded-full after:-translate-y-1/2 after:content-['2'] after:flex after:justify-center after:items-center"
+                        style={`background: rgb(${cc}); box-shadow: rgba(${cc}, 0.7) 0px 0px 10px;`}
+                    >
+                        {d}
+                    </span>
+                );
+            })
+        }
+    </div>
+    <div class="flex gap-4 flex-wrap justify-start">
+        <div class="w-full">Half damage from:</div>
+        {
+            halfDamageFrom.map((d) => {
+                let cc = typeColor(d);
+                return (
+                    <span
+                        class="h-10 w-32 rounded-3xl flex justify-center items-center uppercase text-[#FFFFFF] font-bold pr-8 pl-2 fill-white relative after:absolute after:top-1/2 after:right-1 after:w-8 after:h-8 after:border-2 after:border-solid after:border-white after:rounded-full after:-translate-y-1/2 after:content-['½'] after:flex after:justify-center after:items-center"
+                        style={`background: rgb(${cc}); box-shadow: rgba(${cc}, 0.7) 0px 0px 10px;`}
+                    >
+                        {d}
+                    </span>
+                );
+            })
+        }
+    </div>
+</div>

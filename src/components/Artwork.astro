@@ -5,6 +5,6 @@ export interface Props {
 const { image } = Astro.props as Props;
 ---
 
-<div class="h-[calc(100vh/4)]">
+<div class="h-[calc(100vh/4)] lg:h-auto lg:w-auto lg:p-12">
     <img src={image} class="h-full w-auto block mx-auto" />
 </div>
