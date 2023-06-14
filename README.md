@@ -46,3 +46,7 @@ All commands are run from the root of the project, from a terminal:
 Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
 
 ![Main page](https://github.com/WinterKRALLe/Pokemoni/blob/main/mainpage.png)
+
+![Main page search](https://github.com/WinterKRALLe/Pokemoni/blob/main/mainpagesearch.png)
+
+![Pokemon detail](https://github.com/WinterKRALLe/Pokemoni/blob/main/pokedetail.png)
