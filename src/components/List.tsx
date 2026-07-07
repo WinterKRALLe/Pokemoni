@@ -76,7 +76,7 @@ const List = () => {
               ref={lastPostRef}
               key={i}
               name={p.name}
-              type={p.types.map(t => t.type.name)}
+              type={p.types[0].type.name}
               image={p.sprites.other.dream_world.front_default}
             />
           )

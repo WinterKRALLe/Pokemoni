@@ -15,7 +15,7 @@ const Search: React.FC = () => {
 
   const handleSearch = async () => {
     try {
-      const response = await fetch("/src/assets/pokemon_names.txt");
+      const response = await fetch("/pokemon_names.txt");
       const data = await response.text();
       const filteredResults = data
         .split("\n")
@@ -30,7 +30,7 @@ const Search: React.FC = () => {
   return (
     <div className="max-w-xs w-2/5 relative">
       <input
-        className=" w-full py-1 px-2 text-md rounded-lg border-2 border-neutral-300 border-solid focus:outline-none"
+        className="w-full py-1 px-2 text-base rounded-lg border-2 border-neutral-300 border-solid focus:outline-hidden"
         value={searchTerm}
         onChange={(event) => setSearchTerm(event.target.value)}
         placeholder="Search..."

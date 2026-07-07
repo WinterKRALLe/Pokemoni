@@ -1,8 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+    --animate-spin-slow: spin 40s linear infinite;
+    --animate-counterclockwisespin-slow: counterclockwisespin 50s linear infinite;
+
+    @keyframes counterclockwisespin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(-360deg);
+        }
+    }
+}
 
 @layer base {
     body {
@@ -12,7 +24,7 @@
 }
 
 .lg-box {
-    @apply rounded-3xl bg-black bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-10 p-12;
+    @apply rounded-3xl bg-black/10 bg-clip-padding backdrop-blur-xl p-12;
 }
 
 @media screen and (max-width: 768px) {
